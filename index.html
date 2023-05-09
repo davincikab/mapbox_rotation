@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapbox Routenplaner</title>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+    <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-size: 16px;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        #menu {
+            position: absolute;
+            background: white;
+            padding: 10px;
+            font-family: 'Open Sans', sans-serif;
+            z-index: 2;
+            right: 0;
+            top:40px;
+            margin:10px;
+            border-radius: 5px;
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+        }
+
+        #searchForm {
+            position: absolute;
+            top: 10px;
+            right: 60px;
+            z-index: 10;
+        }
+
+        #searchForm input {
+            height: 20px;
+            width: 200px;
+            padding:0.25rem 0.5rem;
+            border-radius:4px;
+            border:1px solid #ddd;
+        }
+
+        button.directions-icon {
+            display: none !important;
+        }
+
+        .mapbox-directions-origin,
+        .mapbox-directions-destination {
+            display: none;
+        }
+
+        .mapbox-directions-component > .mapbox-directions-component-keyline:first-child {
+            box-shadow: none;
+        }
+
+        #searchForm button, .btn {
+            height: 32px;
+            padding: 0.25rem 0.5rem;
+            border-radius:4px;
+            border:1px solid #ddd;
+        }
+
+        #toggle-btn {
+            position: absolute;
+            top:50px;
+            right:5px;
+            z-index: 2;
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .d-none {
+            display:none !important;
+        }
+
+        .bearing-section {
+            position: absolute;
+            bottom: 40px;
+            left: 0px;
+            margin:10px;
+            text-align: center;
+            width: 100px;
+            height: 30px;
+            z-index: 2;
+            background-color: white;
+            box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+        }
+
+        @media screen and (max-width:480px) {
+            #searchForm {
+                width: 80%;
+                left:10px;
+            }
+
+            #searchForm input {
+                width: 70%;
+            }
+            #toggle-btn {
+                display: block;
+            }
+
+            .mapboxgl-ctrl-directions.mapboxgl-ctrl, .mapbox-directions-profile {
+                margin-left:0px;
+            }
+            .mapboxgl-ctrl-top-left {
+                top: 70px;
+                left:0px;
+                margin-left: 5px;
+            }
+
+            #menu {
+                top:120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="map">
+        <button id="toggle-btn" class="btn">Toggle Direction</button>
+
+        <div id="menu">
+            <div class="input-group">
+                <input id="streets-v12" type="radio" name="rtoggle" value="streets" checked>
+                <label for="streets-v12">Streets</label>
+            </div> 
+
+            <div class="input-group">
+                <input id="satellite-streets-v12" type="radio" name="rtoggle" value="satellite">
+                <label for="satellite-streets-v12">Satellite Streets</label>
+            </div>
+
+            <div class="input-group">
+                <input id="light-v11" type="radio" name="rtoggle" value="light">
+                <label for="light-v11">Light</label>
+            </div>
+
+            <div class="input-group">
+                <input id="dark-v11" type="radio" name="rtoggle" value="dark">
+                <label for="dark-v11">Dark</label>
+            </div>           
+
+            <div class="input-group">
+                <input id="outdoors-v12" type="radio" name="rtoggle" value="outdoors">
+                <label for="outdoors-v12">Outdoors</label>
+            </div>
+            
+        </div>
+    </div>
+
+    <form id="searchForm">
+        <input type="text" id="searchInput" placeholder="Koordinaten-ID eingeben" />
+        <button type="submit">Suchen</button>
+    </form>
+    
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
+    <!-- <script>
+        mapboxgl.accessToken="pk.eyJ1IjoiZGFobGsiLCJhIjoiY2xoNjllazR5MDJmNzNybzZ2cHZtc3pvaSJ9.tLB2WDqOgw8RiLPbrm6TYg";const e=new mapboxgl.Map({container:"map",style:"mapbox://styles/mapbox/streets-v12",center:[6.35582,43.11709],projection:"mercator",zoom:10});e.addControl(new mapboxgl.NavigationControl,"bottom-right");const o=new mapboxgl.GeolocateControl({positionOptions:{enableHighAccuracy:!0},showAccuracyCircle:!1,trackUserLocation:!0,showUserHeading:!0});e.addControl(o,"top-right");const t=[{id:"96",lat:43.11754,lng:6.35828},{id:"A16",lat:43.1157,lng:6.35924},{id:"A31",lat:43.11944,lng:6.35923},{id:"A14",lat:43.11673,lng:6.35878}],n=document.getElementById("searchForm"),i=document.getElementById("searchInput");let a,r;e.on("load",(()=>{o.trigger(),r=new MapboxDirections({accessToken:mapboxgl.accessToken,unit:"metric",profile:"mapbox/driving",controls:{profileSwitcher:!0,inputs:!0,instructions:!0},trackUserLocation:!0,interactive:!1,language:"de"}),e.addControl(r,"top-left");n.addEventListener("submit",(e=>{e.preventDefault();const o=i.value.toLocaleLowerCase(),n=t.find((e=>e.id.toLocaleLowerCase()===o));if(console.log(n),n){(e=>{a?(r.setOrigin(a),r.setDestination(e)):alert("Kindly enable geolocation !")})([n.lng,n.lat])}})),o.on("geolocate",(t=>{a=[t.coords.longitude,t.coords.latitude],r.getDestination()&&r.setOrigin(a),o._lastKnownPosition&&(console.log("Updating User Location"),e.easeTo({center:a,duration:1e3}))}));const l=document.getElementById("menu").querySelectorAll("input");console.log(l);for(const o of l)o.onclick=o=>{const t=o.target.id;console.log(t);let n=e.getStyle().sources.directions,i=e.getStyle().layers.filter((e=>"directions"==e.source));e.setStyle("mapbox://styles/mapbox/"+t),e.once("styledata",(o=>{e.addSource("directions",n),i.forEach((o=>e.addLayer(o)))}))}})),o.on("error",(e=>{console.error("GeolocateControl error:",e)})),document.getElementById("toggle-btn").onclick=e=>{document.querySelector(".mapboxgl-ctrl-directions").classList.toggle("d-none")},window.addEventListener("deviceorientation",(function(t){if(e.getBearing()==Math.floor(o._heading)||!o._heading)return;e.setBearing(Math.floor(o._heading))}),!0);
+    </script> -->
+
+    <script src="script.js"></script>
+</body>
+</html>

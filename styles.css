@@ -1,0 +1,16 @@
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+
+#searchInput {
+    position: absolute;
+    top: 150px;
+    right: 10px;
+    z-index: 1;
+}
+
+#modeButtonsContainer {
+    position: absolute;
+    top: 200px;
+    right: 10px;
+    z-index: 1;
+}
