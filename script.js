@@ -171,10 +171,9 @@ function handleOrientation(event) {
     }
 
     setTimeout((e) => {
-        
-        map.rotateTo({
-            bearing: geolocate._heading || 0,
-            easing: easing
+
+        map.rotateTo( geolocate._heading || 0, {
+            duration:100
         });
 
     }, 500);
