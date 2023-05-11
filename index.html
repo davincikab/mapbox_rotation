@@ -95,7 +95,40 @@
             box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
         }
 
+        /* hide different mapbox profiles */
+        .mapbox-directions-component-keyline {
+            width: 50%;
+            display: flex;
+        }
+
+        .mapbox-directions-profile label {
+            flex:1px;
+        }
+
+        label[for=mapbox-directions-profile-driving-traffic] {
+            display: none;
+        }
+
+        label[for=mapbox-directions-profile-cycling] {
+            display: none;
+        }
+
+        .page-logo {
+            position: absolute;
+            top:50px;
+            z-index: 2;
+            left:0px;
+            margin:10px 0px 0px 10px;
+        }
+
+        .page-logo img {
+            height: 30px;
+        }
+
         @media screen and (max-width:480px) {
+            .page-logo { 
+                top:80px;
+            }
             #searchForm {
                 width: 80%;
                 left:10px;
@@ -112,13 +145,13 @@
                 margin-left:0px;
             }
             .mapboxgl-ctrl-top-left {
-                top: 70px;
+                top: 30px;
                 left:0px;
                 margin-left: 5px;
             }
 
             #menu {
-                top:120px;
+                top:90px;
             }
         }
     </style>
@@ -126,6 +159,10 @@
 <body>
     <div id="map">
         <button id="toggle-btn" class="btn">Toggle Direction</button>
+
+        <div class="page-logo">
+            <img src="logo.png" alt="" width="150px">
+        </div>
 
         <div id="menu">
             <div class="input-group">

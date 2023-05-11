@@ -14,3 +14,22 @@ body { margin: 0; padding: 0; }
     right: 10px;
     z-index: 1;
 }
+
+
+/* hide different mapbox profiles */
+.mapbox-directions-component-keyline {
+    width: 50%;
+    display: flex;
+}
+
+.mapbox-directions-profile label {
+    flex:1px;
+}
+
+label[for=mapbox-directions-profile-driving-traffic] {
+    display: none;
+}
+
+label[for=mapbox-directions-profile-cycling] {
+    display: none;
+}

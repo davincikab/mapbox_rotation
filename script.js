@@ -39,7 +39,7 @@ map.on('load', () => {
     geolocate.trigger();
 
     map.on('rotate', () => {
-        console.log('A rotate event occurred.');
+        // console.log('A rotate event occurred.');
     });
 
     // Mapbox Directions
@@ -51,10 +51,9 @@ map.on('load', () => {
             profileSwitcher:true,
             inputs: true,
             instructions: true,
-            
         },
         trackUserLocation:true,
-        interactive: false,
+        interactive: true,
         language: 'de'
     });
 
@@ -77,7 +76,7 @@ map.on('load', () => {
         const id = searchInput.value.toLocaleLowerCase();
         const targetCoord = coordinates.find(coord => coord.id.toLocaleLowerCase() === id);
 
-        console.log(targetCoord);
+        // console.log(targetCoord);
         if (targetCoord) {
             const destination = [targetCoord.lng, targetCoord.lat];
 
@@ -87,7 +86,7 @@ map.on('load', () => {
     });
 
     geolocate.on('geolocate', (position) => {
-        console.log(position);
+        // console.log(position);
 
         userLocation = [position.coords.longitude, position.coords.latitude];
 
@@ -97,24 +96,17 @@ map.on('load', () => {
             directions.setOrigin(userLocation);
         }
 
-        console.log("Updating User Location");
-        // document.querySelector('.bearing-section').innerHTML = "Heading: " + geolocate._heading;
         map.setCenter(userLocation);
-        //  map.easeTo({
-        //     center:userLocation
-        // });
 
     });
 
     // toggle map style
     const layerList = document.getElementById('menu');
     const inputs = layerList.querySelectorAll('input');
-    console.log(inputs);
-    
+
     for (const input of inputs) {
         input.onclick = (layer) => {
             const layerId = layer.target.id;
-            console.log(layerId);
 
             
             let directionSources = map.getStyle().sources.directions;
@@ -153,7 +145,8 @@ if (window.DeviceOrientationEvent) {
 }
 
 function handleOrientation(event) {
-    let compassdir
+    let compassdir;
+
     if (event.webkitCompassHeading) {
         // Apple works only with this, alpha doesn't work
         compassdir = event.webkitCompassHeading
@@ -172,11 +165,12 @@ function handleOrientation(event) {
 
     setTimeout((e) => {
 
-        map.rotateTo( geolocate._heading || 0, {
+        let bearing = geolocate._heading || 0;
+        map.rotateTo(bearing, {
             duration:100
         });
 
-    }, 500);
+    }, 100);
 
     
     
