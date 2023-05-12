@@ -87,6 +87,7 @@ map.on('load', () => {
 
     geolocate.on('geolocate', (position) => {
         console.log(position);
+        document.getElementById("gps-button").classList.add('active');
 
         userLocation = [position.coords.longitude, position.coords.latitude];
 
@@ -126,6 +127,8 @@ map.on('load', () => {
 });
 
 geolocate.on('error', (error) => {
+    document.getElementById("gps-button").classList.remove('active');
+
     console.error('GeolocateControl error:', error);
 });
 
