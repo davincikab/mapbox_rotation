@@ -69,6 +69,10 @@
             border:1px solid #ddd;
         }
 
+        .mapboxgl-ctrl-geolocate {
+            display: none !important;
+        }
+
         #toggle-btn {
             position: absolute;
             top:50px;
@@ -123,6 +127,29 @@
 
         .page-logo img {
             height: 30px;
+        }
+
+        .gps-button {
+            position: absolute;
+            bottom: 30px;
+            left:0%;
+            z-index: 3;
+            background-color: black;
+            color:white;
+            border: none;
+            border-radius: 5px;
+            width: 100px;
+            padding:0.5rem 0.75rem;
+            margin:10px;
+            cursor: pointer;
+        }
+
+        .gps-button:focus {
+            outline: none;
+        }
+
+        .gps-button.active {
+            background-color: green;
         }
 
         @media screen and (max-width:480px) {
@@ -191,6 +218,8 @@
             </div>
             
         </div>
+
+        <button class="gps-button active" id="gps-button">GPS ON</button>
     </div>
 
     <form id="searchForm">

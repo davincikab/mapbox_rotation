@@ -22,7 +22,7 @@ const geolocate = new mapboxgl.GeolocateControl({
     showUserHeading: true
 });
 
-map.addControl(geolocate, 'top-right');
+map.addControl(geolocate, 'bottom-left');
 
 const coordinates =  [
     {id:"96",lat:43.11754,lng:6.35828},
@@ -86,7 +86,7 @@ map.on('load', () => {
     });
 
     geolocate.on('geolocate', (position) => {
-        // console.log(position);
+        console.log(position);
 
         userLocation = [position.coords.longitude, position.coords.latitude];
 
@@ -171,22 +171,25 @@ function handleOrientation(event) {
         });
 
     }, 100);
+}
 
-    
-    
-    // console.log(event);
-    
 
-    // if(map.getBearing() == Math.floor(geolocate._heading) || !geolocate._heading) {
-    //     return;
-    // }
+// mapbox geolocation
+document.getElementById("gps-button").onclick = (e) => {
+    console.log(e);
 
-   
+    if(e.target.classList.contains('active')){
+        // geolocate._clearWatch();
+        geolocate._watchState = 'BACKGROUND_ERROR';
+        geolocate.trigger();
 
-    // // document.querySelector('.bearing-section').innerHTML = "Heading: " + Math.floor(geolocate._heading || 0);
-    // map.rotateTo(Math.floor(geolocate._heading), {
-    //     duration:1000,
-    //     easing: x => x
-    // });
+        e.target.classList.remove('active');
+        e.target.innerHTML = "GPS OFF";
+    } else {
+        geolocate.trigger();
+        e.target.classList.add('active');
+        e.target.innerHTML = "GPS ON";
+    }
+
     
 }
