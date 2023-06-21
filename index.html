@@ -7,6 +7,9 @@
     <title>Mapbox Routenplaner</title>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
     <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
+    <script src='https://unpkg.com/@turf/turf@6/turf.min.js'></script>
     <style>
         body {
             margin: 0;
@@ -32,6 +35,137 @@
             margin:10px;
             border-radius: 5px;
             box-shadow: 0 0 0 2px rgba(0,0,0,0.1);
+        }
+
+        .mapbox-directions-instructions {
+            height: 150px;
+        }
+
+        .custom-directions {
+            position: absolute;
+            width: 300px;
+            top:50px;
+            z-index: 2;
+            left:0px;
+            margin:10px 0px 0px 10px;
+            border-radius: 5px;
+        }
+
+        .custom-directions .input-group {
+            display: flex;
+            margin:0.25rem 0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .custom-directions .input-group .input-text {
+            background-color: rgb(6, 60, 114);
+            color:white;
+            /* flex: 0.2; */
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .custom-directions .input-group .geocoder {
+
+        }   
+
+        .custom-directions .mapboxgl-ctrl-geocoder {
+            margin:0 !important;
+        }
+
+        .custom-directions .profile-switcher {
+            border-radius: 50px;
+            background-color: white;
+            color:#919191;
+            box-shadow: 0px 0px 0.25rem #919191;
+            width:150px;
+            display: flex;
+            padding:2px;
+        }
+
+        .profile-switcher > input {
+            display: none;
+        }
+
+        .profile-switcher > label {
+            padding:0.25rem;
+            font-size: 14px;
+            line-height: 20px;
+
+            font-size: 12px;
+            color: rgba(0,0,0,.5);
+            flex: 1;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .profile-switcher label:hover {
+            color:hsla(0, 0%, 0%, 0.6);
+        }
+
+        .profile-switcher > label.active {
+            background-color: #ddd;
+            color:#000;
+            border-radius: 15px;
+        }
+
+        .directions-tab {
+            background: rgba(0,0,0,0.75);
+            margin: 7px 0 0;
+            color: #fff;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            overflow: auto;
+            overflow-x: hidden;
+            display: none;
+        }
+
+        .directions-summary {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            background-color: rgba(0,0,0,0.75);
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 15px;
+            line-height: 28px;
+            display: flex;
+            align-items: center;
+        }
+
+        .directions-summary h1 {
+            margin: 0px 10px 0px 0px;
+            font-size: 15px;
+        }
+
+        .leg-listing {
+            max-height: 50vh;
+        }
+
+        .leg-listing ol {
+            position: relative;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .leg-listing ol li {
+            display: inline-flex;
+            padding: 20px 20px 20px 12px !important;
+            width: 100%;
+        }
+
+        .leg-listing ol li .mapbox-directions-step-maneuver {
+            margin-left: 5px;
+        }
+
+        .input-controls {
+            display: none !important;
         }
 
         #searchForm {
@@ -85,6 +219,9 @@
         .d-none {
             display:none !important;
         }
+        .d-block {
+            display: block !important;
+        }
 
         .bearing-section {
             position: absolute;
@@ -119,7 +256,7 @@
 
         .page-logo {
             position: absolute;
-            top:50px;
+            top:0px;
             z-index: 2;
             left:0px;
             margin:10px 0px 0px 10px;
@@ -151,6 +288,7 @@
         .gps-button.active {
             background-color: green;
         }
+
 
         @media screen and (max-width:480px) {
             .page-logo { 
@@ -186,6 +324,12 @@
             .gps-button {
                 top:230px;
             }
+
+            .custom-directions {
+                top:120px;
+                display: none;
+                width: 230px;
+            }
         }
     </style>
 </head>
@@ -197,10 +341,43 @@
             <img src="logo.png" alt="" width="150px">
         </div>
 
+        <div class="custom-directions">
+            <div class="input-controls">
+                <div class="input-group">
+                    <div class="input-text">A</div>
+                    <div id="geocoder-origin"></div>
+                </div>
+                
+                <div class="input-group">
+                    <div class="input-text">B</div>
+                    <div id="geocoder-destination"></div>
+                </div>
+            </div>
+            
+
+            <div class="profile-switcher">
+                <input type="radio" id="driving" data-profile="auto">
+                <label for="driving" class="profile-switcher-label active" id="label-driving" data-profile="auto">Driving</label>
+
+                <input type="radio" id="walking" data-profile="pedestrian">
+                <label for="walking" class="profile-switcher-label" id="label-walking">Walking</label>
+            </div>
+
+            <div class="directions-tab">
+
+                <div class="directions-summary"></div>
+                <div class="leg-listing">
+                    <ol></ol>
+                </div>
+
+            </div>
+            
+        </div>
+
         <div id="menu">
             <div class="input-group">
-                <input id="streets-v12" type="radio" name="rtoggle" value="streets" checked>
-                <label for="streets-v12">Streets</label>
+                <input id="osm" type="radio" name="rtoggle" value="streets" checked>
+                <label for="osm">OSM</label>
             </div> 
 
             <div class="input-group">
@@ -225,7 +402,7 @@
             
         </div>
 
-        <button class="gps-button" id="gps-button">GPS ON</button>
+        <button class="gps-button" id="gps-button">GPS OFF</button>
     </div>
 
     <form id="searchForm">
@@ -238,7 +415,7 @@
     <!-- <script>
         mapboxgl.accessToken="pk.eyJ1IjoiZGFobGsiLCJhIjoiY2xoNjllazR5MDJmNzNybzZ2cHZtc3pvaSJ9.tLB2WDqOgw8RiLPbrm6TYg";const e=new mapboxgl.Map({container:"map",style:"mapbox://styles/mapbox/streets-v12",center:[6.35582,43.11709],projection:"mercator",zoom:10});e.addControl(new mapboxgl.NavigationControl,"bottom-right");const o=new mapboxgl.GeolocateControl({positionOptions:{enableHighAccuracy:!0},showAccuracyCircle:!1,trackUserLocation:!0,showUserHeading:!0});e.addControl(o,"top-right");const t=[{id:"96",lat:43.11754,lng:6.35828},{id:"A16",lat:43.1157,lng:6.35924},{id:"A31",lat:43.11944,lng:6.35923},{id:"A14",lat:43.11673,lng:6.35878}],n=document.getElementById("searchForm"),i=document.getElementById("searchInput");let a,r;e.on("load",(()=>{o.trigger(),r=new MapboxDirections({accessToken:mapboxgl.accessToken,unit:"metric",profile:"mapbox/driving",controls:{profileSwitcher:!0,inputs:!0,instructions:!0},trackUserLocation:!0,interactive:!1,language:"de"}),e.addControl(r,"top-left");n.addEventListener("submit",(e=>{e.preventDefault();const o=i.value.toLocaleLowerCase(),n=t.find((e=>e.id.toLocaleLowerCase()===o));if(console.log(n),n){(e=>{a?(r.setOrigin(a),r.setDestination(e)):alert("Kindly enable geolocation !")})([n.lng,n.lat])}})),o.on("geolocate",(t=>{a=[t.coords.longitude,t.coords.latitude],r.getDestination()&&r.setOrigin(a),o._lastKnownPosition&&(console.log("Updating User Location"),e.easeTo({center:a,duration:1e3}))}));const l=document.getElementById("menu").querySelectorAll("input");console.log(l);for(const o of l)o.onclick=o=>{const t=o.target.id;console.log(t);let n=e.getStyle().sources.directions,i=e.getStyle().layers.filter((e=>"directions"==e.source));e.setStyle("mapbox://styles/mapbox/"+t),e.once("styledata",(o=>{e.addSource("directions",n),i.forEach((o=>e.addLayer(o)))}))}})),o.on("error",(e=>{console.error("GeolocateControl error:",e)})),document.getElementById("toggle-btn").onclick=e=>{document.querySelector(".mapboxgl-ctrl-directions").classList.toggle("d-none")},window.addEventListener("deviceorientation",(function(t){if(e.getBearing()==Math.floor(o._heading)||!o._heading)return;e.setBearing(Math.floor(o._heading))}),!0);
     </script> -->
-
+    <script src="data.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
