@@ -321,15 +321,17 @@ document.getElementById("toggle-btn").onclick = (e) => {
 
 // window.addEventListener("deviceorientation", handleOrientation, true);
 const easing = t => t * (1 - t)
-
+let count = 0;
 if (window.DeviceOrientationEvent) {
     window.addEventListener('deviceorientation',handleOrientation, true);
+    alert("Firing Device Orientatation");
 } else {
     alert("Sorry, your browser doesn't support Device Orientation")
 }
 
 function handleOrientation(event) {
     let compassdir;
+    count++;
 
     if (event.webkitCompassHeading) {
         // Apple works only with this, alpha doesn't work
@@ -339,7 +341,7 @@ function handleOrientation(event) {
         compassdir = event.alpha * -1;
     }
 
-    document.getElementById("heading").innerHTML = compassdir;
+    document.getElementById("heading").innerHTML = compassdir + "<small>Count: " + count + "</small>";
 
     if(map.isZooming() || map.isMoving()) {
         return;
