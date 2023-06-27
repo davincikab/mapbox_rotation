@@ -399,7 +399,7 @@ function requestOrientationPermission(){
 
     // alert("Requesting Permission");
 
-    DeviceOrientationEvent.requestPermission()
+    DeviceMotionEvent.requestPermission()
     .then(response => {
         if (response == 'granted') {
             window.addEventListener('deviceorientation', (e) => {
