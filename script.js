@@ -336,7 +336,9 @@ function handleOrientation(event) {
         compassdir = event.webkitCompassHeading
     }
     else {
-        compassdir = event.alpha
+        compassdir = event.alpha;
+
+        document.getElementById("heading").innerHTML = compassdir;
     }
 
     if(map.isZooming() || map.isMoving()) {
