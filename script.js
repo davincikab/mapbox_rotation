@@ -371,9 +371,11 @@ var _e = null;
 var _c = 0;
 
 function testOrientationSupport() {
-    if(iOS()) {
-        requestOrientationPermission();
+    let isIphone = iOS();
+    document.getElementById("heading").innerHTML = navigator.userAgentData.platform;
 
+    if(isIphone) {
+        requestOrientationPermission();
         return;
     }
 
