@@ -323,7 +323,7 @@ document.getElementById("toggle-btn").onclick = (e) => {
 const easing = t => t * (1 - t)
 let count = 0;
 if (window.DeviceOrientationEvent) {
-    window.addEventListener('deviceorientation',handleOrientation, true);
+    window.addEventListener('deviceorientation',handleOrientation, false);
     alert("Firing Device Orientatation");
 } else {
     alert("Sorry, your browser doesn't support Device Orientation")
@@ -341,7 +341,7 @@ function handleOrientation(event) {
         compassdir = event.alpha * -1;
     }
 
-    document.getElementById("heading").innerHTML = compassdir + "<small>Count: " + count + "</small>";
+    document.getElementById("heading").innerHTML = "<small>Count: " + count + "</small>";
 
     if(map.isZooming() || map.isMoving()) {
         return;
