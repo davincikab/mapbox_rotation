@@ -351,14 +351,14 @@ function handleOrientation(event) {
     setTimeout((e) => {
 
         // let bearing = geolocate._heading || 0;
-        // map.rotateTo(bearing, {
-        //     duration:100
-        // });
+        map.rotateTo(bearing, {
+            duration:100
+        });
 
-        map.easeTo({
-            bearing,
-            duruation:100,
-        })
+        // map.easeTo({
+        //     bearing,
+        //     duruation:100,
+        // })
 
     }, 100);
 }
