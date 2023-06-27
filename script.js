@@ -397,7 +397,7 @@ function testOrientationSupport() {
                 clearInterval(_i);
                 // > Redirect
 
-                alert("Device Orientation Not Suppoerted");
+                // alert("Device Orientation Not Supported");
             }
         }
     }, 200);
@@ -408,6 +408,9 @@ testOrientationSupport();
 
 // check if the device is Ios
 function requestOrientationPermission(){
+
+    alert("Requesting Permission");
+
     DeviceOrientationEvent.requestPermission()
     .then(response => {
         if (response == 'granted') {
@@ -417,7 +420,11 @@ function requestOrientationPermission(){
             })
         }
     })
-    .catch(console.error)
+    .catch(error => {
+        console.error(error);
+
+        alert("Permission Denied");
+    })
 }
 
 function iOS() {
@@ -428,7 +435,7 @@ function iOS() {
       'iPad',
       'iPhone',
       'iPod'
-    ].includes(navigator.platform)
+    ].includes(navigator.userAgentData.platform)
     // iPad on iOS 13 detection
     || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
 }
