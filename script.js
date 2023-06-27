@@ -26,7 +26,7 @@ let osmStyle = {
 const map = new mapboxgl.Map({
     container: 'map',
     style: osmStyle,
-    center: [6.35582, 43.11709], // Berlin, Germany
+    center: [10.745571, 54.035289], // Berlin, Germany
     projection:'mercator',
     zoom: 15
 });
@@ -36,9 +36,10 @@ map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 // GPS Geolocation
 const geolocate = new mapboxgl.GeolocateControl({
     positionOptions: {
-        enableHighAccuracy: true,
-        // maximumAge:2000,
-        // timeout:0
+        enableHighAccuracy: true
+    },
+    fitBoundsOptions:{
+        maxZoom:18
     },
     showAccuracyCircle:false,
     trackUserLocation: true,
@@ -46,16 +47,51 @@ const geolocate = new mapboxgl.GeolocateControl({
 });
 
 map.addControl(geolocate, 'bottom-left');
-
+let isZoomedIn = false;
 const searchForm = document.getElementById('searchForm');
 const searchInput = document.getElementById('searchInput');
 let userLocation, directions;
 
 map.on('load', () => {
-    geolocate.trigger();
+    geolocate.trigger(); 
+
+    map.on("click", (e) => {
+        console.log(e);
+
+        let coords = Object.values(e.lngLat);
+        customDirections.setDestination(coords);
+        customDirections.findRoute();
+    });
+
+    // add the images
+    map.addSource('portland', {
+        "type": "image",
+        'url': './image_updated.PNG',
+        "coordinates": [
+            [ 10.742511794243363, 54.034344686385751],
+            
+            [ 10.750258147451364, 54.034344686385751],
+           
+            [ 10.750258147451364, 54.036384906215751],
+            [ 10.742511794243363, 54.036384906215751]
+        ]
+    });
+
+    // map.addSource('portland', {
+    //     "type": "raster",
+    //     'url': './Scharbeutz.jpg'
+    // });
+         
+    // map.addLayer({
+    //     'id': 'portland',
+    //     'source': 'portland',
+    //     'type': 'raster',
+    //     'paint':{
+    //         'raster-opacity':0.9
+    //     }
+    // });
 
     // add osm data
-
     map.addSource('directions-src', {
         type:'geojson',
         data:{"type":"FeatureCollection", "features":[]}
@@ -71,7 +107,15 @@ map.on('load', () => {
           },
           'paint': {
             'line-color': '#2d5f99',
-            'line-width': 12
+            'line-width': [
+                "interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+                3,
+                5,
+                15,
+                15
+            ]
           },
           'filter': [
             'all',
@@ -86,7 +130,15 @@ map.on('load', () => {
         type:'line',
         paint:{
             'line-color':'#4882c5',
-            'line-width':7
+            'line-width':[
+                "interpolate",
+                ["exponential", 1.5],
+                ["zoom"],
+                3,
+                3.5,
+                15,
+                10
+            ]
         },
         'filter': [
             'all',
@@ -189,16 +241,37 @@ map.on('load', () => {
         document.getElementById("gps-button").classList.add('active');
         document.getElementById("gps-button").innerHTML = 'GPS ON';
 
-        userLocation = [position.coords.longitude, position.coords.latitude];
+        // map.setCenter(userLocation);
+        let center = [position.coords.longitude, position.coords.latitude];
+        // if(!userLocation) {
+            map.once('zoomend', (e) => {
+                console.log("Flying To");
+
+                if(map.getZoom() < 18 && !isZoomedIn) {
+                    map.setZoom(15);
+                    isZoomedIn = true;
+                    // map.flyTo({
+                    //     center:[...center],
+                    //     zoom:18
+                    // });
+                }
+                
+            })
+           
+
+            
+        // }
+
+        userLocation = [...center];
 
         if (!directions.getDestination()) {
             // console.log("Select Destination");
         } else {
             directions.setOrigin(userLocation);
-            customDirections.setOrigin(userLocation);
         }
 
-        map.setCenter(userLocation);
+        customDirections.setOrigin(userLocation);
+        customDirections.findRoute();
 
     });
 
@@ -240,7 +313,9 @@ geolocate.on('error', (error) => {
 
 document.getElementById("toggle-btn").onclick = (e) => {
     document.querySelector(".mapboxgl-ctrl-directions").classList.toggle('d-none');
-    document.querySelector(".custom-directions").classList.toggle('d-block');
+    // document.querySelector(".custom-directions").classList.toggle('d-block');
+
+    // document.querySelector(".directions-tab").classList.toggle('d-block');
 }
 
 
@@ -248,7 +323,7 @@ window.addEventListener("deviceorientation", handleOrientation, true);
 const easing = t => t * (1 - t)
 
 if (window.DeviceOrientationEvent) {
-    window.addEventListener('deviceorientation',handleOrientation)
+    window.addEventListener('deviceorientation',handleOrientation);
   }
   else {
     alert("Sorry, your browser doesn't support Device Orientation")
@@ -275,10 +350,10 @@ function handleOrientation(event) {
 
     setTimeout((e) => {
 
-        let bearing = geolocate._heading || 0;
-        map.rotateTo(bearing, {
-            duration:100
-        });
+        // let bearing = geolocate._heading || 0;
+        // map.rotateTo(bearing, {
+        //     duration:100
+        // });
 
     }, 100);
 }
@@ -384,6 +459,12 @@ class CustomDirections {
             "lat":coord[1],
             "type":"break"
         }
+
+        // this.origin ={
+        //     lon:10.745571, 
+        //     lat:54.035289,
+        //     type:"break",
+        // }
     }
 
     setDestination(coord) {
@@ -418,7 +499,7 @@ class CustomDirections {
         });
 
         document.querySelector("ol").innerHTML = legItems.join("");
-        document.querySelector(".directions-tab").classList.add('d-block');
+        // document.querySelector(".directions-tab").classList.add('d-block');
 
         // update the route
         let coordinates = decode(shape).map(coord => coord.reverse());
@@ -558,6 +639,7 @@ class CustomDirections {
                 "directions_options":{
                     "units":"kilometers"
                 },
+                "language":"de",
                 "id":"valhalla_directions"
             }
         }
