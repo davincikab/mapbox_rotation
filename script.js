@@ -399,20 +399,24 @@ function requestOrientationPermission(){
 
     // alert("Requesting Permission");
 
-    DeviceMotionEvent.requestPermission()
-    .then(response => {
-        if (response == 'granted') {
-            window.addEventListener('deviceorientation', (e) => {
-                // do something with e
-                handleOrientation(e);
-            })
-        }
-    })
-    .catch(error => {
-        console.error(error);
+    if ( typeof( DeviceMotionEvent ) !== "undefined" && typeof( DeviceMotionEvent.requestPermission ) === "function" ) {
+        DeviceMotionEvent.requestPermission()
+        .then(response => {
+            if (response == 'granted') {
+                window.addEventListener('deviceorientation', (e) => {
+                    // do something with e
+                    handleOrientation(e);
+                })
+            }
+        })
+        .catch(error => {
+            console.error(error);
 
-        alert("Permission Denied");
-    })
+            alert("Permission Denied");
+        })
+    } else {
+        alert("Device Motion Not Supported");
+    }
 }
 
 function iOS() {
