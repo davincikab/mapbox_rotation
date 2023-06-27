@@ -319,13 +319,12 @@ document.getElementById("toggle-btn").onclick = (e) => {
 }
 
 
-window.addEventListener("deviceorientation", handleOrientation, true);
+// window.addEventListener("deviceorientation", handleOrientation, true);
 const easing = t => t * (1 - t)
 
 if (window.DeviceOrientationEvent) {
     window.addEventListener('deviceorientation',handleOrientation);
-  }
-  else {
+} else {
     alert("Sorry, your browser doesn't support Device Orientation")
 }
 
@@ -348,9 +347,9 @@ function handleOrientation(event) {
         return;
     }
 
+    let bearing = geolocate._heading || 0;
+    document.getElementById("heading").innerHTML = bearing;
     setTimeout((e) => {
-
-        // let bearing = geolocate._heading || 0;
         map.rotateTo(bearing, {
             duration:100
         });
