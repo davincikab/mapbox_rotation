@@ -355,9 +355,9 @@ function handleOrientation(event) {
     let bearing = compassdir || geolocate._heading;
     // document.getElementById("heading").innerHTML = bearing;
     setTimeout((e) => {
-        map.rotateTo(bearing, {
-            duration:100
-        });
+        // map.rotateTo(bearing, {
+        //     duration:100
+        // });
 
         // map.easeTo({
         //     bearing,
@@ -372,7 +372,7 @@ var _c = 0;
 
 function testOrientationSupport() {
     let isIphone = iOS();
-    document.getElementById("heading").innerHTML = navigator.platform || navigator.userAgentData.platform;
+    // document.getElementById("heading").innerHTML = navigator.platform || navigator.userAgentData.platform;
 
     if(isIphone) {
         requestOrientationPermission();
@@ -415,7 +415,7 @@ function requestOrientationPermission(){
             alert("Permission Denied");
         })
     } else {
-        alert("Device Motion Not Supported");
+        alert("Device Orietation Not Supported: Rotate the map Manually");
     }
 }
 
