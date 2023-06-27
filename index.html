@@ -5,7 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mapbox Routenplaner</title>
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.css" rel="stylesheet">
+    
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+
+
     <link href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.min.js"></script>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.0/mapbox-gl-geocoder.css" type="text/css">
@@ -268,7 +271,7 @@
 
         .gps-button {
             position: absolute;
-            top: 235px;
+            top: 245px;
             right:0%;
             z-index: 3;
             background-color: black;
@@ -409,7 +412,7 @@
         <button type="submit">Suchen</button>
     </form>
     
-    <script src="https://api.mapbox.com/mapbox-gl-js/v2.14.1/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
     <!-- <script>
         mapboxgl.accessToken="pk.eyJ1IjoiZGFobGsiLCJhIjoiY2xoNjllazR5MDJmNzNybzZ2cHZtc3pvaSJ9.tLB2WDqOgw8RiLPbrm6TYg";const e=new mapboxgl.Map({container:"map",style:"mapbox://styles/mapbox/streets-v12",center:[6.35582,43.11709],projection:"mercator",zoom:10});e.addControl(new mapboxgl.NavigationControl,"bottom-right");const o=new mapboxgl.GeolocateControl({positionOptions:{enableHighAccuracy:!0},showAccuracyCircle:!1,trackUserLocation:!0,showUserHeading:!0});e.addControl(o,"top-right");const t=[{id:"96",lat:43.11754,lng:6.35828},{id:"A16",lat:43.1157,lng:6.35924},{id:"A31",lat:43.11944,lng:6.35923},{id:"A14",lat:43.11673,lng:6.35878}],n=document.getElementById("searchForm"),i=document.getElementById("searchInput");let a,r;e.on("load",(()=>{o.trigger(),r=new MapboxDirections({accessToken:mapboxgl.accessToken,unit:"metric",profile:"mapbox/driving",controls:{profileSwitcher:!0,inputs:!0,instructions:!0},trackUserLocation:!0,interactive:!1,language:"de"}),e.addControl(r,"top-left");n.addEventListener("submit",(e=>{e.preventDefault();const o=i.value.toLocaleLowerCase(),n=t.find((e=>e.id.toLocaleLowerCase()===o));if(console.log(n),n){(e=>{a?(r.setOrigin(a),r.setDestination(e)):alert("Kindly enable geolocation !")})([n.lng,n.lat])}})),o.on("geolocate",(t=>{a=[t.coords.longitude,t.coords.latitude],r.getDestination()&&r.setOrigin(a),o._lastKnownPosition&&(console.log("Updating User Location"),e.easeTo({center:a,duration:1e3}))}));const l=document.getElementById("menu").querySelectorAll("input");console.log(l);for(const o of l)o.onclick=o=>{const t=o.target.id;console.log(t);let n=e.getStyle().sources.directions,i=e.getStyle().layers.filter((e=>"directions"==e.source));e.setStyle("mapbox://styles/mapbox/"+t),e.once("styledata",(o=>{e.addSource("directions",n),i.forEach((o=>e.addLayer(o)))}))}})),o.on("error",(e=>{console.error("GeolocateControl error:",e)})),document.getElementById("toggle-btn").onclick=e=>{document.querySelector(".mapboxgl-ctrl-directions").classList.toggle("d-none")},window.addEventListener("deviceorientation",(function(t){if(e.getBearing()==Math.floor(o._heading)||!o._heading)return;e.setBearing(Math.floor(o._heading))}),!0);
