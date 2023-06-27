@@ -322,12 +322,12 @@ document.getElementById("toggle-btn").onclick = (e) => {
 // window.addEventListener("deviceorientation", handleOrientation, true);
 const easing = t => t * (1 - t)
 let count = 0;
-if (window.DeviceOrientationEvent) {
-    window.addEventListener('deviceorientation',handleOrientation, false);
-    alert("Firing Device Orientatation");
-} else {
-    alert("Sorry, your browser doesn't support Device Orientation")
-}
+// if (window.DeviceOrientationEvent) {
+//     window.addEventListener('deviceorientation',handleOrientation, false);
+//     alert("Firing Device Orientatation");
+// } else {
+//     alert("Sorry, your browser doesn't support Device Orientation")
+// }
 
 function handleOrientation(event) {
     let compassdir;
@@ -365,8 +365,40 @@ function handleOrientation(event) {
 
     }, 100);
 }
+var _i = null;
+var _e = null;
+var _c = 0;
 
+function testOrientationSupport() {
+    
 
+    var updateDegree = function(e){
+        _e = e;
+    }
+
+    window.addEventListener('deviceorientation', updateDegree, false);
+
+    //  Check event support
+    _i = window.setInterval(function(){
+        if(_e !== null && _e.alpha !== null){
+            // Clear interval
+            clearInterval(_i);
+            // > Run app
+            handleOrientation(_e);
+        }else{
+            _c++;
+            if(_c === 10){
+                // Clear interval
+                clearInterval(_i);
+                // > Redirect
+
+                alert("Device Orientation Not Suppoerted");
+            }
+        }
+    }, 200);
+}
+
+testOrientationSupport();
 // mapbox geolocation
 document.getElementById("gps-button").onclick = (e) => {
     console.log(e);
