@@ -355,6 +355,11 @@ function handleOrientation(event) {
         //     duration:100
         // });
 
+        map.easeTo({
+            bearing,
+            duruation:100,
+        })
+
     }, 100);
 }
 
