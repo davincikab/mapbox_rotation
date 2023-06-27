@@ -335,6 +335,7 @@ function handleOrientation(event) {
 
     if (event.webkitCompassHeading) {
         // Apple works only with this, alpha doesn't work
+        alert("")
         compassdir = event.webkitCompassHeading
     }
     else {
@@ -370,7 +371,11 @@ var _e = null;
 var _c = 0;
 
 function testOrientationSupport() {
-    
+    if(iOS()) {
+        requestOrientationPermission();
+
+        return;
+    }
 
     var updateDegree = function(e){
         _e = e;
@@ -399,6 +404,35 @@ function testOrientationSupport() {
 }
 
 testOrientationSupport();
+
+
+// check if the device is Ios
+function requestOrientationPermission(){
+    DeviceOrientationEvent.requestPermission()
+    .then(response => {
+        if (response == 'granted') {
+            window.addEventListener('deviceorientation', (e) => {
+                // do something with e
+                handleOrientation(e);
+            })
+        }
+    })
+    .catch(console.error)
+}
+
+function iOS() {
+    return [
+      'iPad Simulator',
+      'iPhone Simulator',
+      'iPod Simulator',
+      'iPad',
+      'iPhone',
+      'iPod'
+    ].includes(navigator.platform)
+    // iPad on iOS 13 detection
+    || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+}
+
 // mapbox geolocation
 document.getElementById("gps-button").onclick = (e) => {
     console.log(e);
