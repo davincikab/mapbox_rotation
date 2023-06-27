@@ -336,10 +336,10 @@ function handleOrientation(event) {
         compassdir = event.webkitCompassHeading
     }
     else {
-        compassdir = event.alpha;
-
-        document.getElementById("heading").innerHTML = compassdir;
+        compassdir = event.alpha * -1;
     }
+
+    document.getElementById("heading").innerHTML = compassdir;
 
     if(map.isZooming() || map.isMoving()) {
         return;
@@ -349,8 +349,8 @@ function handleOrientation(event) {
         return;
     }
 
-    let bearing = geolocate._heading || 0;
-    document.getElementById("heading").innerHTML = bearing;
+    let bearing = compassdir || geolocate._heading;
+    // document.getElementById("heading").innerHTML = bearing;
     setTimeout((e) => {
         map.rotateTo(bearing, {
             duration:100
