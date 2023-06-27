@@ -335,14 +335,14 @@ function handleOrientation(event) {
 
     if (event.webkitCompassHeading) {
         // Apple works only with this, alpha doesn't work
-        alert("")
+        alert("Iphone");
         compassdir = event.webkitCompassHeading
     }
     else {
         compassdir = event.alpha * -1;
     }
 
-    document.getElementById("heading").innerHTML = "<small>Count: " + count + "</small>";
+    // document.getElementById("heading").innerHTML = "<small>Count: " + count + "</small>";
 
     if(map.isZooming() || map.isMoving()) {
         return;
@@ -372,7 +372,7 @@ var _c = 0;
 
 function testOrientationSupport() {
     let isIphone = iOS();
-    document.getElementById("heading").innerHTML = navigator.userAgentData.platform;
+    document.getElementById("heading").innerHTML = navigator.platform || navigator.userAgentData.platform;
 
     if(isIphone) {
         requestOrientationPermission();
@@ -381,28 +381,14 @@ function testOrientationSupport() {
 
     var updateDegree = function(e){
         _e = e;
+
+        if(_e !== null && _e.alpha !== null) { 
+            handleOrientation(_e);
+        }
+        
     }
 
     window.addEventListener('deviceorientation', updateDegree, false);
-
-    //  Check event support
-    _i = window.setInterval(function(){
-        if(_e !== null && _e.alpha !== null){
-            // Clear interval
-            clearInterval(_i);
-            // > Run app
-            handleOrientation(_e);
-        }else{
-            _c++;
-            if(_c === 10){
-                // Clear interval
-                clearInterval(_i);
-                // > Redirect
-
-                // alert("Device Orientation Not Supported");
-            }
-        }
-    }, 200);
 }
 
 testOrientationSupport();
@@ -430,6 +416,8 @@ function requestOrientationPermission(){
 }
 
 function iOS() {
+    let platform = navigator.platform || navigator.userAgentData.platform;
+
     return [
       'iPad Simulator',
       'iPhone Simulator',
@@ -437,7 +425,7 @@ function iOS() {
       'iPad',
       'iPhone',
       'iPod'
-    ].includes(navigator.userAgentData.platform)
+    ].includes(platform)
     // iPad on iOS 13 detection
     || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
 }
