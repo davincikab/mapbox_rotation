@@ -335,7 +335,7 @@ function handleOrientation(event) {
 
     if (event.webkitCompassHeading) {
         // Apple works only with this, alpha doesn't work
-        alert("Iphone");
+        // alert("Iphone");
         compassdir = event.webkitCompassHeading
     }
     else {
@@ -397,7 +397,7 @@ testOrientationSupport();
 // check if the device is Ios
 function requestOrientationPermission(){
 
-    alert("Requesting Permission");
+    // alert("Requesting Permission");
 
     DeviceOrientationEvent.requestPermission()
     .then(response => {
