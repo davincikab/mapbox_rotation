@@ -323,7 +323,7 @@ document.getElementById("toggle-btn").onclick = (e) => {
 const easing = t => t * (1 - t)
 
 if (window.DeviceOrientationEvent) {
-    window.addEventListener('deviceorientation',handleOrientation);
+    window.addEventListener('deviceorientation',handleOrientation, true);
 } else {
     alert("Sorry, your browser doesn't support Device Orientation")
 }
