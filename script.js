@@ -46,19 +46,42 @@ const geolocate = new mapboxgl.GeolocateControl({
     showUserHeading: true
 });
 
-geolocate._updateCamera = (position) => {
-    console.log("Do Nothing");
-    document.getElementById("heading").innerHTML = "Update: " + Math.random();
+class CustomGeolocation extends mapboxgl.GeolocateControl {
+    constructor(options) {
+        super(options);
+    }
+
+    _updateCamera(position) {
+        console.log("Camera Update: ", position);
+        document.getElementById("heading").innerHTML = "Camera Update: " + Math.random();
+    }
 }
 
-map.addControl(geolocate, 'bottom-left');
+const customGeo = new CustomGeolocation({
+    positionOptions: {
+        enableHighAccuracy: true
+    },
+    fitBoundsOptions:{
+        maxZoom:15
+    },
+    showAccuracyCircle:false,
+    trackUserLocation: true,
+    showUserHeading: true
+});
+
+// geolocate._updateCamera = (position) => {
+//     console.log("Do Nothing");
+//     document.getElementById("heading").innerHTML = "Update: " + Math.random();
+// }
+
+map.addControl(customGeo, 'bottom-left');
 let isZoomedIn = false;
 const searchForm = document.getElementById('searchForm');
 const searchInput = document.getElementById('searchInput');
 let userLocation, directions;
 
 map.on('load', () => {
-    geolocate.trigger(); 
+    customGeo.trigger(); 
 
     map.on("click", (e) => {
         console.log(e);
@@ -241,16 +264,16 @@ map.on('load', () => {
         }
     });
 
-    geolocate.on('trackuserlocationstart', (position) => {
+    customGeo.on('trackuserlocationstart', (position) => {
         console.log(position);
     });
 
-    geolocate.on('geolocate', (position) => {
+    customGeo.on('geolocate', (position) => {
         console.log(position);
         document.getElementById("gps-button").classList.add('active');
         document.getElementById("gps-button").innerHTML = 'GPS ON';
 
-        document.getElementById("heading").innerHTML = "Geo: " + Math.random();
+        // document.getElementById("heading").innerHTML = "Geo: " + Math.random();
 
         // map.setCenter(userLocation);
         let center = [position.coords.longitude, position.coords.latitude];
@@ -265,7 +288,7 @@ map.on('load', () => {
                     isZoomedIn = true;
                     map.flyTo({
                         center:[...center],
-                        zoom:14
+                        zoom:16
                     });
                 }
                 
@@ -318,7 +341,7 @@ map.on('load', () => {
     }
 });
 
-geolocate.on('error', (error) => {
+customGeo.on('error', (error) => {
     document.getElementById("gps-button").classList.remove('active');
 
     console.error('GeolocateControl error:', error);
@@ -453,13 +476,13 @@ document.getElementById("gps-button").onclick = (e) => {
 
     if(e.target.classList.contains('active')){
         // geolocate._clearWatch();
-        geolocate._watchState = 'BACKGROUND_ERROR';
-        geolocate.trigger();
+        customGeo._watchState = 'BACKGROUND_ERROR';
+        customGeo.trigger();
 
         e.target.classList.remove('active');
         e.target.innerHTML = "GPS OFF";
     } else {
-        geolocate.trigger();
+        customGeo.trigger();
         e.target.classList.add('active');
         e.target.innerHTML = "GPS ON";
     }
