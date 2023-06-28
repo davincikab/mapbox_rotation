@@ -46,6 +46,10 @@ const geolocate = new mapboxgl.GeolocateControl({
     showUserHeading: true
 });
 
+geolocate._updateCamera = (position) => {
+
+}
+
 map.addControl(geolocate, 'bottom-left');
 let isZoomedIn = false;
 const searchForm = document.getElementById('searchForm');
@@ -236,6 +240,10 @@ map.on('load', () => {
         }
     });
 
+    geolocate.on('trackuserlocationstart', (position) => {
+        console.log(position);
+    });
+
     geolocate.on('geolocate', (position) => {
         console.log(position);
         document.getElementById("gps-button").classList.add('active');
@@ -245,9 +253,11 @@ map.on('load', () => {
         let center = [position.coords.longitude, position.coords.latitude];
         // if(!userLocation) {
             map.once('zoomend', (e) => {
-                console.log("Flying To");
+                
 
                 if(map.getZoom() < 18 && !isZoomedIn) {
+                    console.log("Flying To");
+
                     map.setZoom(15);
                     isZoomedIn = true;
                     // map.flyTo({
