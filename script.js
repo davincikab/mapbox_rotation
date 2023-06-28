@@ -250,6 +250,8 @@ map.on('load', () => {
         document.getElementById("gps-button").classList.add('active');
         document.getElementById("gps-button").innerHTML = 'GPS ON';
 
+        document.getElementById("heading").innerHTML = "Geo: " + Math.random();
+
         // map.setCenter(userLocation);
         let center = [position.coords.longitude, position.coords.latitude];
         // if(!userLocation) {
