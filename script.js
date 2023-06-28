@@ -34,7 +34,7 @@ const map = new mapboxgl.Map({
 map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
 // GPS Geolocation
-const geolocate = new mapboxgl.GeolocateControl({
+const customGeo = new mapboxgl.GeolocateControl({
     positionOptions: {
         enableHighAccuracy: true
     },
@@ -48,7 +48,7 @@ const geolocate = new mapboxgl.GeolocateControl({
 
 class CustomGeolocation extends mapboxgl.GeolocateControl {
     constructor(options) {
-        super(options);
+        super(options);    
     }
 
     _updateCamera(position) {
@@ -57,22 +57,26 @@ class CustomGeolocation extends mapboxgl.GeolocateControl {
     }
 }
 
-const customGeo = new CustomGeolocation({
-    positionOptions: {
-        enableHighAccuracy: true
-    },
-    fitBoundsOptions:{
-        maxZoom:15
-    },
-    showAccuracyCircle:false,
-    trackUserLocation: true,
-    showUserHeading: true
-});
+// const customGeo = new CustomGeolocation({
+//     positionOptions: {
+//         enableHighAccuracy: true
+//     },
+//     fitBoundsOptions:{
+//         maxZoom:15
+//     },
+//     showAccuracyCircle:false,
+//     trackUserLocation: true,
+//     showUserHeading: true
+// });
 
-// geolocate._updateCamera = (position) => {
-//     console.log("Do Nothing");
-//     document.getElementById("heading").innerHTML = "Update: " + Math.random();
-// }
+customGeo._updateCamera = function(position) {
+    console.log("Do Nothing");
+    document.getElementById("heading").innerHTML = "Update: " + Math.random();
+}
+customGeo.__proto__._updateCamera = function(position) {
+    console.log("Do Nothing");
+    document.getElementById("heading").innerHTML = "Update: " + Math.random();
+}
 
 map.addControl(customGeo, 'bottom-left');
 let isZoomedIn = false;
@@ -642,7 +646,7 @@ class CustomDirections {
         let bbox = turf.bbox(lineFeature);
 
         if(this.isInitialCall) {
-            document.getElementById("heading").innerHTML = "Heading: " + Math.random();
+            // document.getElementById("heading").innerHTML = "Heading: " + Math.random();
             this.isInitialCall = false;
             map.fitBounds(bbox, { padding:80 });
         }
