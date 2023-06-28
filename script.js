@@ -39,7 +39,7 @@ const geolocate = new mapboxgl.GeolocateControl({
         enableHighAccuracy: true
     },
     fitBoundsOptions:{
-        maxZoom:18
+        maxZoom:15
     },
     showAccuracyCircle:false,
     trackUserLocation: true,
@@ -47,7 +47,7 @@ const geolocate = new mapboxgl.GeolocateControl({
 });
 
 geolocate._updateCamera = (position) => {
-
+    console.log("Do Nothing");
 }
 
 map.addControl(geolocate, 'bottom-left');
@@ -468,6 +468,7 @@ class CustomDirections {
     constructor() {
         this.destination;
         this.origin;
+        this.isInitialCall = true;
         this.profile = "car";
 
         this.originGeocoder = new MapboxGeocoder({
@@ -613,7 +614,12 @@ class CustomDirections {
         console.log(lineFeature);
 
         let bbox = turf.bbox(lineFeature);
-        map.fitBounds(bbox, { padding:80 });
+
+        if(this.isInitialCall) {
+            map.fitBounds(bbox, { padding:80 });
+            this.isInitialCall = false;
+        }
+        
     }
 
     getDirectionIconClass(instruction) {
