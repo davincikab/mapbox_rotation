@@ -48,6 +48,7 @@ const geolocate = new mapboxgl.GeolocateControl({
 
 geolocate._updateCamera = (position) => {
     console.log("Do Nothing");
+    document.getElementById("heading").innerHTML = "Update: " + Math.random();
 }
 
 map.addControl(geolocate, 'bottom-left');
@@ -616,11 +617,13 @@ class CustomDirections {
         let bbox = turf.bbox(lineFeature);
 
         if(this.isInitialCall) {
-            map.fitBounds(bbox, { padding:80 });
+            document.getElementById("heading").innerHTML = "Heading: " + Math.random();
             this.isInitialCall = false;
+            map.fitBounds(bbox, { padding:80 });
         }
         
-    }
+        navigator.geolocation.watchPosition
+    }   
 
     getDirectionIconClass(instruction) {
         if(instruction.includes("Turn right")) {
