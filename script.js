@@ -258,12 +258,12 @@ map.on('load', () => {
                 if(map.getZoom() < 18 && !isZoomedIn) {
                     console.log("Flying To");
 
-                    map.setZoom(15);
+                    // map.setZoom(15);
                     isZoomedIn = true;
-                    // map.flyTo({
-                    //     center:[...center],
-                    //     zoom:18
-                    // });
+                    map.flyTo({
+                        center:[...center],
+                        zoom:14
+                    });
                 }
                 
             })
