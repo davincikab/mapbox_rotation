@@ -47,36 +47,14 @@ const customGeo = new CustomGeolocation({
     showUserHeading: true
 }, map);
 
-// const customGeo = new CustomGeolocation({
-//     positionOptions: {
-//         enableHighAccuracy: true
-//     },
-//     fitBoundsOptions:{
-//         maxZoom:15
-//     },
-//     showAccuracyCircle:false,
-//     trackUserLocation: true,
-//     showUserHeading: true
-// });
 
-customGeo._updateCamera = function(position) {
-    // console.log("Do Nothing");
-    // document.getElementById("heading").innerHTML = "Update: " + Math.random();
-}
-
-customGeo.__proto__._updateCamera = function(position) {
-    // console.log("Do Nothing");
-    // document.getElementById("heading").innerHTML = "Update: " + Math.random();
-}
-
-// map.addControl(customGeo, 'bottom-left');
 let isZoomedIn = false;
 const searchForm = document.getElementById('searchForm');
 const searchInput = document.getElementById('searchInput');
 let userLocation, directions;
 
 map.on('load', () => {
-    customGeo.trigger(); 
+    customGeo.triggerGeolocation(); 
 
     map.on("click", (e) => {
         console.log(e);
@@ -263,34 +241,23 @@ map.on('load', () => {
     //     console.log(position);
     // });
 
-    customGeo.on('geolocate', (position) => {
-        console.log(position);
-        console.log("Working on a few things");
-        // document.getElementById("gps-button").classList.add('active');
-        // document.getElementById("gps-button").innerHTML = 'GPS ON';
+    customGeo.geolocationBtn.addEventListener("geolocate_success", function(event) {
+        console.log("Custom Event");
+        console.log(event.detail.position);
+        // return;
+        let position = event.detail.position;
 
-        // document.getElementById("heading").innerHTML = "Geo: " + Math.random();
-
-        // map.setCenter(userLocation);
         let center = [position.coords.longitude, position.coords.latitude];
-        if(map.getZoom() < 18 && !isZoomedIn) {
-            console.log("Flying To");
-
-            // map.setZoom(15);
-            isZoomedIn = true;
+        if(!isZoomedIn) {
             map.flyTo({
-                center:[...center],
-                zoom:16
+                center,
+                zoom:15
             });
+
+            isZoomedIn = true;
         }
 
         userLocation = [...center];
-
-        if (!directions.getDestination()) {
-            // console.log("Select Destination");
-        } else {
-            directions.setOrigin(userLocation);
-        }
 
         customDirections.setOrigin(userLocation);
         customDirections.findRoute();
@@ -326,7 +293,7 @@ map.on('load', () => {
     }
 });
 
-customGeo.on('error', (error) => {
+customGeo.on('geolocate_error', (error) => {
     console.error('GeolocateControl error:', error);
 });
 

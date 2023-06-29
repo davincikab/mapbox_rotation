@@ -34,7 +34,7 @@ class CustomGeolocation extends mapboxgl.Evented {
             };
 
             // this.options.geolocation.getCurrentPosition((pos) => this.onSuccess(pos), (err) => this.onError(err), options);
-            this._timeoutId = setTimeout(this._finish, 10000 /* 10sec */);
+            this._timeoutId = setTimeout(this._geolocate_finish, 10000 /* 10sec */);
         }
 
         if(this.options.showUserHeading) {
@@ -57,7 +57,7 @@ class CustomGeolocation extends mapboxgl.Evented {
         this.geolocationBtn = document.getElementById("gps-button");
         this.geolocationBtn.onclick = evt => {
             console.log(evt);
-            this.trigger();
+            this.triggerGeolocation();
         };
     }
 
@@ -125,18 +125,20 @@ class CustomGeolocation extends mapboxgl.Evented {
         }
     }
 
-    trigger() {
-        console.log("Trigger Call");
-        console.log(this);
+    updateDirections() {
+
+    }
+
+    triggerGeolocation() {
 
         if(this.watchId) {
-            console.log("Clear Watch");
+            // console.log("Clear Watch");
             this._clearWatch();
             this.geolocationBtn.classList.remove("active");
             this.geolocationBtn.classList.innerHTML = "GPS OFF";
 
         } else if(!this.options.trackUserLocation && !this.watchId) {
-            console.log("Watch Location");
+            // console.log("Watch Location");
 
             this.options.geolocation.getCurrentPosition(
                 (pos) => this.onSuccess(pos), 
@@ -147,7 +149,7 @@ class CustomGeolocation extends mapboxgl.Evented {
             // This timeout ensures that we still call finish() even if
             // the user declines to share their location in Firefox
             // $FlowFixMe[method-unbinding]
-            this._timeoutId = setTimeout(this._finish(), 10000 /* 10sec */)
+            this._timeoutId = setTimeout(this._geolocate_finish(), 10000 /* 10sec */)
 
             this.geolocationBtn.classList.add('active');
             this.geolocationBtn.innerHTML = 'GPS ON';
@@ -169,9 +171,6 @@ class CustomGeolocation extends mapboxgl.Evented {
     }
 
     onSuccess(position) {
-        console.log(position);
-        console.log(this);
-
         if (!this._map) {
             return;
         }
@@ -180,16 +179,22 @@ class CustomGeolocation extends mapboxgl.Evented {
             this._lastKnownPosition = position;
         }
 
-        if (this.options.showUserLocation) {
+        // if (this.options.showUserLocation) {
 
-        }
+        // }
 
+        this.position = position;
         this.updateMarker(position);
     
+        console.log(position);
+        // // dispatchEvent(new Event('geolocate', position))
+        // this.fire('geolocate_success', position);
+        let event = new CustomEvent("geolocate_success", { detail : { position: position } }); // (2)
+        this.geolocationBtn.dispatchEvent(event);
 
-        // dispatchEvent(new Event('geolocate', position))
-        this.fire('geolocate', position);
-        this._finish();
+        // this._map.fire('location_success', position)
+        this.updateDirections(position);
+        this._geolocate_finish();
     }
 
 
@@ -198,21 +203,16 @@ class CustomGeolocation extends mapboxgl.Evented {
 
         document.getElementById("gps-button").classList.remove('active');
 
-        this.fire('error', error);
-        this._finish();
+        this.fire('geolocate_error', error);
+        this._geolocate_finish();
     }
-
-    triggerGeolocation() {
-        console.log("trigger geolocations")
-    }
-
 
     _clearWatch() {
         this.options.geolocation.clearWatch(this.watchId);
         this.watchId = undefined;
     }
     
-    _finish() {
+    _geolocate_finish() {
         if (this._timeoutId) { 
             clearTimeout(this._timeoutId); 
         }
