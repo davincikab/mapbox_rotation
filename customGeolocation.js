@@ -99,7 +99,7 @@ class CustomGeolocation extends mapboxgl.Evented {
             }
 
             console.log("Device orientation");
-            this._updateMarkerRotation();
+            this.updateMarkerRotation();
         }
     }
 
