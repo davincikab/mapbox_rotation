@@ -42,12 +42,12 @@ class CustomGeolocation extends mapboxgl.Evented {
         }
 
 
-        // this._dotElement = DOM.create('div', 'mapboxgl-user-location');
-        // this._dotElement.appendChild(DOM.create('div', 'mapboxgl-user-location-dot'));
-        // this._dotElement.appendChild(DOM.create('div', 'mapboxgl-user-location-heading'));
+        this._dotElement = DOM.create('div', 'mapboxgl-user-location mapboxgl-user-location-show-heading');
+        this._dotElement.appendChild(DOM.create('div', 'mapboxgl-user-location-dot'));
+        this._dotElement.appendChild(DOM.create('div', 'mapboxgl-user-location-heading'));
 
         this._userLocationDotMarker = new mapboxgl.Marker({
-            // element: this._dotElement,
+            element: this._dotElement,
             rotationAlignment: 'map',
             pitchAlignment: 'map'
         });
@@ -134,6 +134,9 @@ class CustomGeolocation extends mapboxgl.Evented {
         if(this._geolocationWatchID) {
             console.log("Clear Watch");
             this._clearWatch();
+
+            this._userLocationDotMarker.remove();
+
             this.geolocationBtn.classList.remove("active");
             this.geolocationBtn.innerHTML = "GPS OFF";
 
