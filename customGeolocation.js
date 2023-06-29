@@ -107,6 +107,8 @@ class CustomGeolocation extends mapboxgl.Evented {
         if (this._userLocationDotMarker && typeof this._heading === 'number') {
             this._userLocationDotMarker.setRotation(this._heading);
             this._dotElement.classList.add('mapboxgl-user-location-show-heading');
+
+            document.getElementById("heading").innerHTML = `Heading Map: ${this._heading};`;
         } else {
             this._dotElement.classList.remove('mapboxgl-user-location-show-heading');
             this._userLocationDotMarker.setRotation(0);
