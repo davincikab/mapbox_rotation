@@ -585,11 +585,11 @@ class CustomDirections {
 
         let bbox = turf.bbox(lineFeature);
 
-        // if(this.isInitialCall) {
+        if(this.isInitialCall) {
             // document.getElementById("heading").innerHTML = "Heading: " + Math.random();
             this.isInitialCall = false;
             map.fitBounds(bbox, { padding:80 });
-        // }
+        }
         
        
     }   

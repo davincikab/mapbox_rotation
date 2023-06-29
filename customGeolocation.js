@@ -25,7 +25,7 @@ class CustomGeolocation extends mapboxgl.Evented {
                 enableHighAccuracy:true,
             };
 
-            // this.watchId = this.options.geolocation.watchPosition((pos) => this.onSuccess(pos), (err) => this.onError(err), options);
+            // this._geolocationWatchID = this.options.geolocation.watchPosition((pos) => this.onSuccess(pos), (err) => this.onError(err), options);
         } else {
             // run wactch position
             let options = {
@@ -131,13 +131,13 @@ class CustomGeolocation extends mapboxgl.Evented {
 
     triggerGeolocation() {
 
-        if(this.watchId) {
-            // console.log("Clear Watch");
+        if(this._geolocationWatchID) {
+            console.log("Clear Watch");
             this._clearWatch();
             this.geolocationBtn.classList.remove("active");
-            this.geolocationBtn.classList.innerHTML = "GPS OFF";
+            this.geolocationBtn.innerHTML = "GPS OFF";
 
-        } else if(!this.options.trackUserLocation && !this.watchId) {
+        } else if(!this.options.trackUserLocation && !this._geolocationWatchID) {
             // console.log("Watch Location");
 
             this.options.geolocation.getCurrentPosition(
@@ -165,8 +165,8 @@ class CustomGeolocation extends mapboxgl.Evented {
                 this.addDeviceOrientationListener();
             }
 
-             this.geolocationBtn.classList.add('active');
-             this.geolocationBtn.innerHTML = 'GPS ON';
+            this.geolocationBtn.classList.add('active');
+            this.geolocationBtn.innerHTML = 'GPS ON';
         }
     }
 
@@ -208,8 +208,8 @@ class CustomGeolocation extends mapboxgl.Evented {
     }
 
     _clearWatch() {
-        this.options.geolocation.clearWatch(this.watchId);
-        this.watchId = undefined;
+        this.options.geolocation.clearWatch(this._geolocationWatchID);
+        this._geolocationWatchID = undefined;
     }
     
     _geolocate_finish() {
