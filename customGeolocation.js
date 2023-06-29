@@ -42,12 +42,12 @@ class CustomGeolocation extends mapboxgl.Evented {
         }
 
 
-        this._dotElement = DOM.create('div', 'mapboxgl-user-location');
-        this._dotElement.appendChild(DOM.create('div', 'mapboxgl-user-location-dot'));
-        this._dotElement.appendChild(DOM.create('div', 'mapboxgl-user-location-heading'));
+        // this._dotElement = DOM.create('div', 'mapboxgl-user-location');
+        // this._dotElement.appendChild(DOM.create('div', 'mapboxgl-user-location-dot'));
+        // this._dotElement.appendChild(DOM.create('div', 'mapboxgl-user-location-heading'));
 
         this._userLocationDotMarker = new mapboxgl.Marker({
-            element: this._dotElement,
+            // element: this._dotElement,
             rotationAlignment: 'map',
             pitchAlignment: 'map'
         });
