@@ -69,6 +69,7 @@ class CustomGeolocation extends mapboxgl.Evented {
                 window.addEventListener('deviceorientationabsolute', this._onDeviceOrientation);
             } else {
                 // $FlowFixMe[method-unbinding]
+                alert("Orientation Listener");
                 window.addEventListener('deviceorientation', this._onDeviceOrientation);
             }
         };
@@ -99,6 +100,7 @@ class CustomGeolocation extends mapboxgl.Evented {
             }
 
             console.log("Device orientation");
+            document.getElementById("heading").innerHTML = `Heading Map: ${this._heading};`;
             this.updateMarkerRotation();
         }
     }
@@ -108,7 +110,7 @@ class CustomGeolocation extends mapboxgl.Evented {
             this._userLocationDotMarker.setRotation(this._heading);
             this._dotElement.classList.add('mapboxgl-user-location-show-heading');
 
-            document.getElementById("heading").innerHTML = `Heading Map: ${this._heading};`;
+            // document.getElementById("heading").innerHTML = `Heading Map: ${this._heading};`;
         } else {
             this._dotElement.classList.remove('mapboxgl-user-location-show-heading');
             this._userLocationDotMarker.setRotation(0);
