@@ -259,7 +259,7 @@ map.on('load', () => {
 
         userLocation = [...center];
 
-        document.getElementById("heading").innerHTML = `Head: ${Math.round(Math.random()*10)}`
+        // document.getElementById("heading").innerHTML = `Head: ${Math.round(Math.random()*10)}`
         customDirections.setOrigin(userLocation);
         customDirections.findRoute();
     });
