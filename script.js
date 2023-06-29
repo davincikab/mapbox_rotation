@@ -273,26 +273,16 @@ map.on('load', () => {
 
         // map.setCenter(userLocation);
         let center = [position.coords.longitude, position.coords.latitude];
-        // if(!userLocation) {
-            map.once('zoomend', (e) => {
-                
+        if(map.getZoom() < 18 && !isZoomedIn) {
+            console.log("Flying To");
 
-                if(map.getZoom() < 18 && !isZoomedIn) {
-                    console.log("Flying To");
-
-                    // map.setZoom(15);
-                    // isZoomedIn = true;
-                    map.flyTo({
-                        center:[...center],
-                        zoom:16
-                    });
-                }
-                
-            })
-           
-
-            
-        // }
+            // map.setZoom(15);
+            isZoomedIn = true;
+            map.flyTo({
+                center:[...center],
+                zoom:16
+            });
+        }
 
         userLocation = [...center];
 
