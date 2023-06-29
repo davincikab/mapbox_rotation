@@ -34,28 +34,18 @@ const map = new mapboxgl.Map({
 map.addControl(new mapboxgl.NavigationControl(), 'bottom-right');
 
 // GPS Geolocation
-const customGeo = new mapboxgl.GeolocateControl({
+const customGeo = new CustomGeolocation({
     positionOptions: {
         enableHighAccuracy: true
     },
     fitBoundsOptions:{
         maxZoom:15
     },
+    showUserLocation:false,
     showAccuracyCircle:false,
     trackUserLocation: true,
     showUserHeading: true
-});
-
-class CustomGeolocation extends mapboxgl.GeolocateControl {
-    constructor(options) {
-        super(options);    
-    }
-
-    _updateCamera(position) {
-        console.log("Camera Update: ", position);
-        document.getElementById("heading").innerHTML = "Camera Update: " + Math.random();
-    }
-}
+}, map);
 
 // const customGeo = new CustomGeolocation({
 //     positionOptions: {
@@ -70,15 +60,16 @@ class CustomGeolocation extends mapboxgl.GeolocateControl {
 // });
 
 customGeo._updateCamera = function(position) {
-    console.log("Do Nothing");
-    document.getElementById("heading").innerHTML = "Update: " + Math.random();
-}
-customGeo.__proto__._updateCamera = function(position) {
-    console.log("Do Nothing");
-    document.getElementById("heading").innerHTML = "Update: " + Math.random();
+    // console.log("Do Nothing");
+    // document.getElementById("heading").innerHTML = "Update: " + Math.random();
 }
 
-map.addControl(customGeo, 'bottom-left');
+customGeo.__proto__._updateCamera = function(position) {
+    // console.log("Do Nothing");
+    // document.getElementById("heading").innerHTML = "Update: " + Math.random();
+}
+
+// map.addControl(customGeo, 'bottom-left');
 let isZoomedIn = false;
 const searchForm = document.getElementById('searchForm');
 const searchInput = document.getElementById('searchInput');
@@ -268,14 +259,15 @@ map.on('load', () => {
         }
     });
 
-    customGeo.on('trackuserlocationstart', (position) => {
-        console.log(position);
-    });
+    // customGeo.on('trackuserlocationstart', (position) => {
+    //     console.log(position);
+    // });
 
     customGeo.on('geolocate', (position) => {
         console.log(position);
-        document.getElementById("gps-button").classList.add('active');
-        document.getElementById("gps-button").innerHTML = 'GPS ON';
+        console.log("Working on a few things");
+        // document.getElementById("gps-button").classList.add('active');
+        // document.getElementById("gps-button").innerHTML = 'GPS ON';
 
         // document.getElementById("heading").innerHTML = "Geo: " + Math.random();
 
@@ -289,7 +281,7 @@ map.on('load', () => {
                     console.log("Flying To");
 
                     // map.setZoom(15);
-                    isZoomedIn = true;
+                    // isZoomedIn = true;
                     map.flyTo({
                         center:[...center],
                         zoom:16
@@ -312,7 +304,6 @@ map.on('load', () => {
 
         customDirections.setOrigin(userLocation);
         customDirections.findRoute();
-
     });
 
     // toggle map style
@@ -346,8 +337,6 @@ map.on('load', () => {
 });
 
 customGeo.on('error', (error) => {
-    document.getElementById("gps-button").classList.remove('active');
-
     console.error('GeolocateControl error:', error);
 });
 
@@ -475,24 +464,22 @@ function iOS() {
 }
 
 // mapbox geolocation
-document.getElementById("gps-button").onclick = (e) => {
-    console.log(e);
+// document.getElementById("gps-button").onclick = (e) => {
+//     console.log(e);
 
-    if(e.target.classList.contains('active')){
-        // geolocate._clearWatch();
-        customGeo._watchState = 'BACKGROUND_ERROR';
-        customGeo.trigger();
+//     if(e.target.classList.contains('active')){
+//         // geolocate._clearWatch();
+//         customGeo._watchState = 'BACKGROUND_ERROR';
+//         customGeo.trigger();
 
-        e.target.classList.remove('active');
-        e.target.innerHTML = "GPS OFF";
-    } else {
-        customGeo.trigger();
-        e.target.classList.add('active');
-        e.target.innerHTML = "GPS ON";
-    }
-
-    
-}
+//         e.target.classList.remove('active');
+//         e.target.innerHTML = "GPS OFF";
+//     } else {
+//         customGeo.trigger();
+//         e.target.classList.add('active');
+//         e.target.innerHTML = "GPS ON";
+//     }   
+// }
 
 class CustomDirections {
     constructor() {
@@ -516,11 +503,6 @@ class CustomDirections {
             mapboxgl: mapboxgl,
             reverseGeocode: true
         });
-
-        // 
-
-       
-
     }
 
     init() {
@@ -651,7 +633,7 @@ class CustomDirections {
             map.fitBounds(bbox, { padding:80 });
         }
         
-        navigator.geolocation.watchPosition
+       
     }   
 
     getDirectionIconClass(instruction) {
