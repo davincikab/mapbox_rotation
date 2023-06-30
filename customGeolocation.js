@@ -106,11 +106,11 @@ class CustomGeolocation extends mapboxgl.Evented {
                 this._heading = deviceOrientationEvent.alpha * -1;
             }
 
-            console.log("Device orientation");
-            document.getElementById("heading").innerHTML = `Heading Map: ${this._heading};`;
+            // console.log("Device orientation");
+            // document.getElementById("heading").innerHTML = `Heading Map: ${this._heading};`;
             this.updateMarkerRotation();
         } else {
-            console.log("Marker Not Found");
+            // console.log("Marker Not Found");
         }
     }
 
