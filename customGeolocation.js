@@ -63,7 +63,9 @@ class CustomGeolocation extends mapboxgl.Evented {
 
 
     addDeviceOrientationListener() {
-        const addListener = () => {
+
+        const addListener = () => { 
+            console.log("addListener");
             if ('ondeviceorientationabsolute' in window) {
                 // $FlowFixMe[method-unbinding]
                 window.addEventListener('deviceorientationabsolute', this._onDeviceOrientation);
@@ -206,7 +208,7 @@ class CustomGeolocation extends mapboxgl.Evented {
 
 
     onError(error){ 
-        alert(error.message);
+        // alert(error.message);
 
         document.getElementById("gps-button").classList.remove('active');
 

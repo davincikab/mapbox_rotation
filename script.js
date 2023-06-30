@@ -378,7 +378,7 @@ function testOrientationSupport() {
     window.addEventListener('deviceorientation', updateDegree, false);
 }
 
-testOrientationSupport();
+// testOrientationSupport();
 
 
 // check if the device is Ios
