@@ -37,10 +37,6 @@ class CustomGeolocation extends mapboxgl.Evented {
             this._timeoutId = setTimeout(this._geolocate_finish, 10000 /* 10sec */);
         }
 
-        if(this.options.showUserHeading) {
-            this.addDeviceOrientationListener();
-        }
-
 
         this._dotElement = DOM.create('div', 'mapboxgl-user-location mapboxgl-user-location-show-heading');
         this._dotElement.appendChild(DOM.create('div', 'mapboxgl-user-location-dot'));
@@ -59,6 +55,11 @@ class CustomGeolocation extends mapboxgl.Evented {
             console.log(evt);
             this.triggerGeolocation();
         };
+
+
+        if(this.options.showUserHeading) {
+            this.addDeviceOrientationListener();
+        }
     }
 
 
@@ -68,11 +69,11 @@ class CustomGeolocation extends mapboxgl.Evented {
             console.log("addListener");
             if ('ondeviceorientationabsolute' in window) {
                 // $FlowFixMe[method-unbinding]
-                window.addEventListener('deviceorientationabsolute', this._onDeviceOrientation);
+                window.addEventListener('deviceorientationabsolute', (e) => this._onDeviceOrientation(e), false);
             } else {
                 // $FlowFixMe[method-unbinding]
-                alert("Orientation Listener");
-                window.addEventListener('deviceorientation', this._onDeviceOrientation);
+                window.alert("Orientation Listener");
+                window.addEventListener('deviceorientation', (e) => this._onDeviceOrientation(e), false);
             }
         };
 
@@ -92,7 +93,11 @@ class CustomGeolocation extends mapboxgl.Evented {
     }
 
     _onDeviceOrientation(deviceOrientationEvent) {
+        // alert("Device Orientation");
+        console.log(this);
         if (this._userLocationDotMarker) {
+            
+
             if (deviceOrientationEvent.webkitCompassHeading) {
                 // Safari
                 this._heading = deviceOrientationEvent.webkitCompassHeading;
@@ -104,6 +109,8 @@ class CustomGeolocation extends mapboxgl.Evented {
             console.log("Device orientation");
             document.getElementById("heading").innerHTML = `Heading Map: ${this._heading};`;
             this.updateMarkerRotation();
+        } else {
+            console.log("Marker Not Found");
         }
     }
 
